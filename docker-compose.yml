@@ -1,1 +1,25 @@
 # // TODO: Implementar el docker-compose
+version: '3.8'
+
+services:
+  parcial:
+    container_name: parcialContainer
+    environment:
+      POSTGRES_DB: libreria
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      service-libreria:
+    restart: on-failure
+networks:
+  service-libreria:
+    driver: bridge
+    name: service-libreria
+volumes:
+  Library-data:
+    driver: local
