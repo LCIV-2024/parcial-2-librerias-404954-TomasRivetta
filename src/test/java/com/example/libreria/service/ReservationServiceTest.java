@@ -1,8 +1,6 @@
 package com.example.libreria.service;
 
-import com.example.libreria.dto.ReservationRequestDTO;
-import com.example.libreria.dto.ReservationResponseDTO;
-import com.example.libreria.dto.ReturnBookRequestDTO;
+import com.example.libreria.dto.*;
 import com.example.libreria.model.Book;
 import com.example.libreria.model.Reservation;
 import com.example.libreria.model.User;
@@ -13,9 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ class ReservationServiceTest {
     
     @Mock
     private UserService userService;
+
     
     @InjectMocks
     private ReservationService reservationService;
@@ -48,9 +50,16 @@ class ReservationServiceTest {
     private User testUser;
     private Book testBook;
     private Reservation testReservation;
-    
+
+    private ReservationRequestDTO reservationRequestDTO;
+
+    private UserResponseDTO userResponse;
+
+    private BookResponseDTO bookResponse;
+
     @BeforeEach
     void setUp() {
+
         testUser = new User();
         testUser.setId(1L);
         testUser.setName("Juan Pérez");
@@ -79,21 +88,25 @@ class ReservationServiceTest {
     @Test
     void testCreateReservation_Success() {
         // TODO: Implementar el test de creación de reserva exitosa
+
     }
     
     @Test
     void testCreateReservation_BookNotAvailable() {
         // TODO: Implementar el test de creación de reserva cuando el libro no está disponible
+
     }
     
     @Test
     void testReturnBook_OnTime() {
         // TODO: Implementar el test de devolución de libro en tiempo
+
     }
     
     @Test
     void testReturnBook_Overdue() {
         // TODO: Implementar el test de devolución de libro con retraso
+
     }
     
     @Test
