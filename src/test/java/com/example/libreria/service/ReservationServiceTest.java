@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
@@ -45,7 +46,8 @@ class ReservationServiceTest {
 
     @Mock
     private ModelMapper modelMapper;
-    
+
+    @Spy
     @InjectMocks
     private ReservationService reservationService;
     
@@ -150,6 +152,44 @@ class ReservationServiceTest {
     @Test
     void testReturnBook_Overdue() {
         // TODO: Implementar el test de devolución de libro con retraso
+
+        testReservation.setStatus(Reservation.ReservationStatus.ACTIVE);
+        testReservation.setExpectedReturnDate(LocalDate.of(2025, 1, 1));
+        testReservation.setActualReturnDate(null);
+
+
+        when(reservationRepository.findById(testReservation.getId()))
+                .thenReturn(Optional.of(testReservation));
+
+
+        ReturnBookRequestDTO returnRequest = new ReturnBookRequestDTO();
+        returnRequest.setReturnDate(LocalDate.of(2025, 1, 5));
+
+        ReservationResponseDTO overdue = new ReservationResponseDTO();
+        overdue.setId(1L);
+
+        when(reservationService.getOverdueReservations())
+                .thenReturn(List.of(overdue));
+
+
+        when(reservationRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        when(modelMapper.map(any(Reservation.class), eq(ReservationResponseDTO.class)))
+                .thenReturn(new ReservationResponseDTO());
+
+
+        ReservationResponseDTO response =
+                reservationService.returnBook(1L, returnRequest);
+
+        // ASSERT
+        assertNotNull(response);
+        assertNotNull(testReservation.getLateFee());
+
+        BigDecimal expectedLateFee = new BigDecimal("6.00");
+        assertEquals(0, testReservation.getLateFee().compareTo(expectedLateFee));
+
+        verify(bookService).increaseAvailableQuantity(258027L);
 
     }
     
