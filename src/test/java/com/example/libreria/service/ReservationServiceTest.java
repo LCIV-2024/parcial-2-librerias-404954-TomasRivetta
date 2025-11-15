@@ -136,7 +136,7 @@ class ReservationServiceTest {
 
         when(userService.getUserById(1L)).thenReturn(userResponse);
 
-        // Mock del libro sin stock
+
         bookResponse.setStockQuantity(0);
         when(bookService.getBookByExternalId(258027L)).thenReturn(bookResponse);
 
@@ -182,7 +182,6 @@ class ReservationServiceTest {
         ReservationResponseDTO response =
                 reservationService.returnBook(1L, returnRequest);
 
-        // ASSERT
         assertNotNull(response);
         assertNotNull(testReservation.getLateFee());
 
