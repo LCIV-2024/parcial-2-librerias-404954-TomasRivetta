@@ -132,6 +132,19 @@ class ReservationServiceTest {
     void testReturnBook_OnTime() {
         // TODO: Implementar el test de devolución de libro en tiempo
 
+        when(userService.getUserById(1L)).thenReturn(userResponse);
+
+        // Mock del libro sin stock
+        bookResponse.setStockQuantity(0);
+        when(bookService.getBookByExternalId(258027L)).thenReturn(bookResponse);
+
+        // Ejecutar y verificar excepción
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> reservationService.createReservation(reservationRequestDTO)
+        );
+
+        assertEquals("No esta disponible", exception.getMessage());
     }
     
     @Test
