@@ -43,6 +43,8 @@ class ReservationServiceTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private ModelMapper modelMapper;
     
     @InjectMocks
     private ReservationService reservationService;
@@ -83,12 +85,41 @@ class ReservationServiceTest {
         testReservation.setTotalFee(new BigDecimal("111.93"));
         testReservation.setStatus(Reservation.ReservationStatus.ACTIVE);
         testReservation.setCreatedAt(LocalDateTime.now());
+
+        userResponse = new UserResponseDTO();
+        userResponse.setId(1L);
+        userResponse.setName("Juan Pérez");
+        userResponse.setEmail("juan@example.com");
+
+        bookResponse = new BookResponseDTO();
+        bookResponse.setExternalId(258027L);
+        bookResponse.setTitle("The Lord of the Rings");
+        bookResponse.setPrice(new BigDecimal("15.99"));
+        bookResponse.setStockQuantity(10);
+
+        reservationRequestDTO = new ReservationRequestDTO();
+        reservationRequestDTO.setUserId(1L);
+        reservationRequestDTO.setBookExternalId(258027L);
+        reservationRequestDTO.setRentalDays(7);
+        reservationRequestDTO.setStartDate(LocalDate.now());
     }
     
     @Test
     void testCreateReservation_Success() {
         // TODO: Implementar el test de creación de reserva exitosa
 
+        when(userService.getUserById(1L)).thenReturn(userResponse);
+        when(bookService.getBookByExternalId(258027L)).thenReturn(bookResponse);
+
+        when(modelMapper.map(userResponse, User.class)).thenReturn(testUser);
+        when(modelMapper.map(bookResponse, Book.class)).thenReturn(testBook);
+
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(testReservation);
+
+        ReservationResponseDTO result = reservationService.createReservation(reservationRequestDTO);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
     }
     
     @Test
